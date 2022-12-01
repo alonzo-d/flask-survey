@@ -3,5 +3,10 @@
 {% block content %}
 
   <h1>Thanks for completing this survey!</h1>
+  <ul>
+    {% for question, answer in qs_and_as.items() %}
+      <li><b>{{ question }}</b> {{ answer }}</li>
+    {% endfor %}
+  </ul>
 
 {% endblock %}

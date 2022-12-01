@@ -30,6 +30,13 @@ def show_question(q_num):
 def handle_answer():
     """ stores answer and redirects to next question """
     responses.append(request.form.get('answer', ''))
+    if len(responses) == len(survey.questions):
+        return redirect('/thanks')
 
+    return redirect(f'/questions/{len(responses)}')
 
-    return redirect('/questions/1')
+@app.get('/thanks')
+def show_thanks_page():
+    """Generate and show a thank you page"""
+    qs_and_as = {survey.questions[idx].prompt: responses[idx] for idx in range(len(survey.questions))}
+    return render_template('completion.html', qs_and_as=qs_and_as)
