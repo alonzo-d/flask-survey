@@ -25,3 +25,11 @@ def begin_survey():
 def show_question(q_num):
     """Generate and show form for current question"""
     return render_template('question.html', question=survey.questions[q_num])
+
+@app.post('/answer')
+def handle_answer():
+    """ stores answer and redirects to next question """
+    responses.append(request.form.get('answer', ''))
+
+
+    return redirect('/questions/1')
