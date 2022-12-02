@@ -14,7 +14,7 @@ responses = []
 def show_survey_start():
     """Generate survey start page with title, instructions, and a start button
     and show the page"""
-    return render_template('survey_start.html', title=survey.title, instructions=survey.instructions)
+    return render_template('survey_start.html', survey=survey)
 
 @app.post('/begin')
 def begin_survey():
