@@ -8,7 +8,6 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = True
 
 debug = DebugToolbarExtension(app)
 
-
 @app.get('/')
 def show_survey_start():
     """Generate survey start page with title, instructions, and a start button
@@ -24,6 +23,14 @@ def begin_survey():
 @app.get('/questions/<int:q_num>')
 def show_question(q_num):
     """Generate and show form for current question"""
+    if len(session['responses']) == len(survey.questions):
+        flash('You are trying to access an invalid question!')
+        return redirect('/thanks')
+
+    if q_num != len(session['responses']):
+        flash('You are trying to access an invalid question!')
+        return redirect(f'/questions/{len(session["responses"])}')
+
     return render_template('question.html', question=survey.questions[q_num])
 
 @app.post('/answer')
