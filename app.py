@@ -8,7 +8,6 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = True
 
 debug = DebugToolbarExtension(app)
 
-responses = []
 
 @app.get('/')
 def show_survey_start():
@@ -19,6 +18,7 @@ def show_survey_start():
 @app.post('/begin')
 def begin_survey():
     """Start the survey by redirecting to the first question"""
+    session['responses'] = []
     return redirect('/questions/0')
 
 @app.get('/questions/<int:q_num>')
@@ -29,14 +29,16 @@ def show_question(q_num):
 @app.post('/answer')
 def handle_answer():
     """ stores answer and redirects to next question """
+    responses = session['responses']
     responses.append(request.form.get('answer', ''))
-    if len(responses) == len(survey.questions):
+    session['responses'] = responses
+    if len(session['responses']) == len(survey.questions):
         return redirect('/thanks')
 
-    return redirect(f'/questions/{len(responses)}')
+    return redirect(f'/questions/{len(session["responses"])}')
 
 @app.get('/thanks')
 def show_thanks_page():
     """Generate and show a thank you page"""
-    qs_and_as = {survey.questions[idx].prompt: responses[idx] for idx in range(len(survey.questions))}
+    qs_and_as = {survey.questions[idx].prompt: session['responses'][idx] for idx in range(len(survey.questions))}
     return render_template('completion.html', qs_and_as=qs_and_as)
